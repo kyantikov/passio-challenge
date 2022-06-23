@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useReducer} from 'react';
 import { View, StyleSheet, Pressable, Text } from "react-native";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -8,7 +8,43 @@ import NumberInput from "../components/NumberInput";
 
 type Props = NativeStackScreenProps<RootStackParams, 'Inputs'>
 
+enum Action {
+  SwitchUnits = 'SWITCH_UNITS',
+  InputHeight = 'INPUT_HEIGHT',
+  InputWeight = 'INPUT_WEIGHT'
+}
+
+type ActionType =
+  | { type: Action.SwitchUnits }
+  | { type: Action.InputHeight, payload: number | number[] }
+  | { type: Action.InputWeight, payload: number }
+
+type State = {
+  isImperial: boolean
+  height: number | number[]
+  weight: number
+}
+
+const initialState: State = {
+  isImperial: true,
+  height: [0, 0],
+  weight: 0
+}
+
+const inputReducer = (state: State, action: ActionType) => {
+  switch (action.type) {
+    case Action.SwitchUnits:
+      return { ...state, isImperial: !state.isImperial };
+    case Action.InputHeight:
+      return { ...state };
+    case Action.InputWeight:
+      return { ...state, weight: action.payload };
+  }
+};
+
 const InputsScreen = ({ navigation, route }: Props): React.ReactNode => {
+  const [state, dispatch] = useReducer(inputReducer, initialState);
+
   return (
     <View style={styles.container}>
       <View style={{ flex: 0.6 }}/>
@@ -78,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 3,
-    alignSelf: 'flex-end'
+    alignSelf: 'center'
   },
   saveButtonText: {
     color: '#FFFFFF',
