@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TextInput } from "react-native";
+import { View, StyleSheet, TextInput, Pressable, Text } from "react-native";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParams } from "../navigation/RootStack";
@@ -28,6 +28,10 @@ const InputsScreen = ({ navigation, route }: Props) => {
                 style={styles.input}
               />
             </View>
+            <View style={{ flex: 0.05 }}/>
+            <Pressable style={({ pressed }) => ([{ opacity: pressed ? 0.35 : 1}, styles.saveButton])}>
+              <Text style={styles.saveButtonText}>SAVE</Text>
+            </Pressable>
           </View>
         </View>
       </View>
@@ -59,11 +63,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 1}
   },
   inputsContainer: {
-    width: '100%', justifyContent: 'center', alignItems: 'center',
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   inputRowContainer: {
     flexDirection: 'row',
-    height: '17%'
+    height: '18%'
   },
   input: {
     borderWidth: 0.5,
@@ -74,8 +80,21 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   singleInputContainer: {
-    height: '17%',
+    height: '18%',
     width: '100%'
+  },
+  saveButton: {
+    height: '17%',
+    width: '40%',
+    backgroundColor: '#4640AD',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 3,
+    alignSelf: 'flex-end'
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600'
   }
 });
 
