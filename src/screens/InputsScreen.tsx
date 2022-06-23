@@ -1,12 +1,14 @@
 import React from 'react';
-import { View, StyleSheet, TextInput, Pressable, Text } from "react-native";
+import { View, StyleSheet, Pressable, Text } from "react-native";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParams } from "../navigation/RootStack";
 
+import NumberInput from "../components/NumberInput";
+
 type Props = NativeStackScreenProps<RootStackParams, 'Inputs'>
 
-const InputsScreen = ({ navigation, route }: Props) => {
+const InputsScreen = ({ navigation, route }: Props): React.ReactNode => {
   return (
     <View style={styles.container}>
       <View style={{ flex: 0.6 }}/>
@@ -14,22 +16,16 @@ const InputsScreen = ({ navigation, route }: Props) => {
         <View style={styles.modalContainer}>
           <View style={styles.inputsContainer}>
             <View style={styles.inputRowContainer}>
-              <TextInput
-                style={styles.input}
-              />
+              <NumberInput label={'ft.'}/>
               <View style={{ flex: 0.2 }}/>
-              <TextInput
-                style={styles.input}
-              />
+              <NumberInput label={'in.'}/>
             </View>
             <View style={{ flex: 0.05 }}/>
-            <View style={styles.singleInputContainer}>
-              <TextInput
-                style={styles.input}
-              />
+            <View style={styles.inputRowContainer}>
+              <NumberInput label={'lbs'}/>
             </View>
             <View style={{ flex: 0.05 }}/>
-            <Pressable style={({ pressed }) => ([{ opacity: pressed ? 0.35 : 1}, styles.saveButton])}>
+            <Pressable style={({ pressed }) => ([{ opacity: pressed ? 0.35 : 1 }, styles.saveButton])}>
               <Text style={styles.saveButtonText}>SAVE</Text>
             </Pressable>
           </View>
@@ -70,14 +66,6 @@ const styles = StyleSheet.create({
   inputRowContainer: {
     flexDirection: 'row',
     height: '18%'
-  },
-  input: {
-    borderWidth: 0.5,
-    borderColor: '#1498C9',
-    backgroundColor: '#FFFFFF',
-    flex: 2.5,
-    height: '100%%',
-    borderRadius: 5
   },
   singleInputContainer: {
     height: '18%',
