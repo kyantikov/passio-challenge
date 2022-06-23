@@ -1,5 +1,7 @@
-import React, {useReducer} from 'react';
+import React, { useReducer } from 'react';
 import { View, StyleSheet, Pressable, Text } from "react-native";
+
+import SelectDropdown from 'react-native-select-dropdown';
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParams } from "../navigation/RootStack";
@@ -15,7 +17,7 @@ enum Action {
 }
 
 type ActionType =
-  | { type: Action.SwitchUnits }
+  | { type: Action.SwitchUnits, payload: boolean }
   | { type: Action.InputHeight, payload: number[] | number }
   | { type: Action.InputWeight, payload: number }
 
@@ -34,7 +36,7 @@ const initialState: State = {
 const inputReducer = (state: State, action: ActionType) => {
   switch (action.type) {
     case Action.SwitchUnits:
-      return { ...state, isImperial: !state.isImperial };
+      return { ...state, isImperial: action.payload };
     case Action.InputHeight:
       return { ...state, height: action.payload };
     case Action.InputWeight:
@@ -45,35 +47,57 @@ const inputReducer = (state: State, action: ActionType) => {
 const InputsScreen = ({ navigation, route }: Props): React.ReactNode => {
   const [state, dispatch] = useReducer(inputReducer, initialState);
 
+  console.log(state);
+
   return (
     <View style={styles.container}>
       <View style={{ flex: 0.6 }}/>
       <View style={styles.container}>
         <View style={styles.modalContainer}>
           <View style={styles.inputsContainer}>
-            <View style={styles.inputRowContainer}>
-              <NumberInput
-                label={'ft.'}
-                onChangeText={(height) => {
-                  const payload = [height ? parseInt(height) : 0, state.height[1]]
-                  dispatch({ type: Action.InputHeight, payload })
-                }}
-              />
-              <View style={{ flex: 0.2 }}/>
-              <NumberInput
-                label={'in.'}
-                onChangeText={(height) => {
-                  const payload = [state.height[0], height ? parseInt(height) : 0]
-                  dispatch({ type: Action.InputHeight, payload })
-                }}
-              />
-            </View>
+            {state.isImperial
+              ? <View style={styles.inputRowContainer}>
+                  <NumberInput
+                    label={'ft.'}
+                    onChangeText={(height) => {
+                      const payload = [height ? parseInt(height) : 0, state.height[1]]
+                      dispatch({type: Action.InputHeight, payload})
+                    }}
+                  />
+                  <View style={{flex: 0.2}}/>
+                  <NumberInput
+                    label={'in.'}
+                    onChangeText={(height) => {
+                      const payload = [state.height[0], height ? parseInt(height) : 0]
+                      dispatch({type: Action.InputHeight, payload})
+                    }}
+                  />
+                </View>
+              : <View>
+
+              </View>
+            }
             <View style={{ flex: 0.05 }}/>
             <View style={styles.inputRowContainer}>
               <NumberInput
                 label={'lbs'}
                 onChangeText={(weight) => {
                   dispatch({ type: Action.InputWeight, payload: parseInt(weight) })
+                }}
+              />
+              <SelectDropdown
+                buttonStyle={{ width: '40%', height: '96%', borderRadius: 5}}
+                defaultButtonText={'Imperial'}
+                data={['Imperial', 'Metric']}
+                selectedRowTextStyle={{ color: '#FFFFFF'}}
+                dropdownStyle={{ borderRadius: 5 }}
+                selectedRowStyle={{ backgroundColor: '#1498C9'}}
+                onSelect={(item) => {
+                  if (item === 'Metric') {
+                    dispatch({ type: Action.SwitchUnits, payload: false });
+                  } else {
+                    dispatch({ type: Action.SwitchUnits, payload: true });
+                  }
                 }}
               />
             </View>
@@ -131,7 +155,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 3,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    zIndex: -1
   },
   saveButtonText: {
     color: '#FFFFFF',
