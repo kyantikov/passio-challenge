@@ -16,12 +16,12 @@ enum Action {
 
 type ActionType =
   | { type: Action.SwitchUnits }
-  | { type: Action.InputHeight, payload: number | number[] }
+  | { type: Action.InputHeight, payload: number[] | number }
   | { type: Action.InputWeight, payload: number }
 
 type State = {
   isImperial: boolean
-  height: number | number[]
+  height: number[] | number
   weight: number
 }
 
@@ -36,7 +36,7 @@ const inputReducer = (state: State, action: ActionType) => {
     case Action.SwitchUnits:
       return { ...state, isImperial: !state.isImperial };
     case Action.InputHeight:
-      return { ...state };
+      return { ...state, height: action.payload };
     case Action.InputWeight:
       return { ...state, weight: action.payload };
   }
@@ -52,13 +52,30 @@ const InputsScreen = ({ navigation, route }: Props): React.ReactNode => {
         <View style={styles.modalContainer}>
           <View style={styles.inputsContainer}>
             <View style={styles.inputRowContainer}>
-              <NumberInput label={'ft.'}/>
+              <NumberInput
+                label={'ft.'}
+                onChangeText={(height) => {
+                  const payload = [height ? parseInt(height) : 0, state.height[1]]
+                  dispatch({ type: Action.InputHeight, payload })
+                }}
+              />
               <View style={{ flex: 0.2 }}/>
-              <NumberInput label={'in.'}/>
+              <NumberInput
+                label={'in.'}
+                onChangeText={(height) => {
+                  const payload = [state.height[0], height ? parseInt(height) : 0]
+                  dispatch({ type: Action.InputHeight, payload })
+                }}
+              />
             </View>
             <View style={{ flex: 0.05 }}/>
             <View style={styles.inputRowContainer}>
-              <NumberInput label={'lbs'}/>
+              <NumberInput
+                label={'lbs'}
+                onChangeText={(weight) => {
+                  dispatch({ type: Action.InputWeight, payload: parseInt(weight) })
+                }}
+              />
             </View>
             <View style={{ flex: 0.05 }}/>
             <Pressable style={({ pressed }) => ([{ opacity: pressed ? 0.35 : 1 }, styles.saveButton])}>
