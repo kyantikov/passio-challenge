@@ -29,8 +29,8 @@ type State = {
 
 const initialState: State = {
   isImperial: true,
-  height: ['0', '0'],
-  weight: '0'
+  height: ['', ''],
+  weight: ''
 }
 
 const inputReducer = (state: State, action: ActionType) => {
@@ -59,7 +59,7 @@ const InputsScreen = ({ navigation, route }: Props): React.ReactNode => {
                     value={state.height[0]}
                     label={'ft.'}
                     onChangeText={(height) => {
-                      const payload = [height ? height : '0', state.height[1]]
+                      const payload = [height ? height : '', state.height[1]]
                       dispatch({ type: Action.InputHeight, payload })
                     }}
                   />
@@ -68,17 +68,17 @@ const InputsScreen = ({ navigation, route }: Props): React.ReactNode => {
                     value={state.height[1]}
                     label={'in.'}
                     onChangeText={(height) => {
-                      const payload = [state.height[0], height ? height : '0']
+                      const payload = [state.height[0], height ? height : '']
                       dispatch({ type: Action.InputHeight, payload })
                     }}
                   />
                 </View>
               : <View style={styles.inputRowContainer}>
                 <NumberInput
-                  value={state.height}
+                  value={Array.isArray(state.height) ? '' : state.height}
                   label={'m'}
                   onChangeText={(height) => {
-                    dispatch({ type: Action.InputHeight, payload: height ? height : '0' })
+                    dispatch({ type: Action.InputHeight, payload: height ? height : '' })
                   }}
                 />
               </View>
@@ -89,7 +89,7 @@ const InputsScreen = ({ navigation, route }: Props): React.ReactNode => {
                 value={state.weight}
                 label={state.isImperial ? 'lbs': 'kg'}
                 onChangeText={(weight) => {
-                  dispatch({ type: Action.InputWeight, payload: weight ? weight : '0' })
+                  dispatch({ type: Action.InputWeight, payload: weight ? weight : '' })
                 }}
               />
               <SelectDropdown
