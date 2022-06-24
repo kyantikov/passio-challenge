@@ -3,13 +3,15 @@ import { TextInput, StyleSheet, Text } from 'react-native';
 
 type Props = {
   label: string,
+  value: string
   onChangeText: (value: string) => void
 }
 
-const NumberInput = ({ label, onChangeText }: Props): JSX.Element => {
+const NumberInput = ({ label, value, onChangeText }: Props): JSX.Element => {
   return (
     <>
       <TextInput
+        value={value}
         style={styles.input}
         keyboardType='number-pad'
         returnKeyType='done'
