@@ -18,19 +18,19 @@ enum Action {
 
 type ActionType =
   | { type: Action.SwitchUnits, payload: boolean }
-  | { type: Action.InputHeight, payload: number[] | number }
-  | { type: Action.InputWeight, payload: number }
+  | { type: Action.InputHeight, payload: string[] | string }
+  | { type: Action.InputWeight, payload: string }
 
 type State = {
   isImperial: boolean
-  height: number[] | number
-  weight: number
+  height: string[] | string
+  weight: string
 }
 
 const initialState: State = {
   isImperial: true,
-  height: [0, 0],
-  weight: 0
+  height: ['0', '0'],
+  weight: '0'
 }
 
 const inputReducer = (state: State, action: ActionType) => {
@@ -47,8 +47,6 @@ const inputReducer = (state: State, action: ActionType) => {
 const InputsScreen = ({ navigation, route }: Props): React.ReactNode => {
   const [state, dispatch] = useReducer(inputReducer, initialState);
 
-  console.log(state);
-
   return (
     <View style={styles.container}>
       <View style={{ flex: 0.6 }}/>
@@ -58,31 +56,40 @@ const InputsScreen = ({ navigation, route }: Props): React.ReactNode => {
             {state.isImperial
               ? <View style={styles.inputRowContainer}>
                   <NumberInput
+                    value={state.height[0]}
                     label={'ft.'}
                     onChangeText={(height) => {
-                      const payload = [height ? parseInt(height) : 0, state.height[1]]
-                      dispatch({type: Action.InputHeight, payload})
+                      const payload = [height ? height : '0', state.height[1]]
+                      dispatch({ type: Action.InputHeight, payload })
                     }}
                   />
                   <View style={{flex: 0.2}}/>
                   <NumberInput
+                    value={state.height[1]}
                     label={'in.'}
                     onChangeText={(height) => {
-                      const payload = [state.height[0], height ? parseInt(height) : 0]
-                      dispatch({type: Action.InputHeight, payload})
+                      const payload = [state.height[0], height ? height : '0']
+                      dispatch({ type: Action.InputHeight, payload })
                     }}
                   />
                 </View>
-              : <View>
-
+              : <View style={styles.inputRowContainer}>
+                <NumberInput
+                  value={state.height}
+                  label={'m'}
+                  onChangeText={(height) => {
+                    dispatch({ type: Action.InputHeight, payload: height ? height : '0' })
+                  }}
+                />
               </View>
             }
             <View style={{ flex: 0.05 }}/>
             <View style={styles.inputRowContainer}>
               <NumberInput
-                label={'lbs'}
+                value={state.weight}
+                label={state.isImperial ? 'lbs': 'kg'}
                 onChangeText={(weight) => {
-                  dispatch({ type: Action.InputWeight, payload: parseInt(weight) })
+                  dispatch({ type: Action.InputWeight, payload: weight ? weight : '0' })
                 }}
               />
               <SelectDropdown
